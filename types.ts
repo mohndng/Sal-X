@@ -12,7 +12,9 @@ export interface Transaction {
 export interface UserProfile {
   name: string;
   bio: string;
-  employment: string;
+  natureOfWork: string;
+  salary: number;
+  salaryFrequency: 'monthly' | 'weekly';
   profilePictureUrl: string | null;
   coverPhotoUrl: string | null;
 }
