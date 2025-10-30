@@ -17,6 +17,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ saveTransaction, edit
     const [error, setError] = useState<string>('');
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+    const [isValidationDialogOpen, setIsValidationDialogOpen] = useState(false);
     const [dataToSave, setDataToSave] = useState<{ transaction: Omit<Transaction, 'id'>; id?: string } | null>(null);
 
     const isEditing = !!editingTransaction;
@@ -55,6 +56,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ saveTransaction, edit
             return;
         }
 
+        // Validation for details input
+        if (/^[0-9]+$/.test(details)) {
+            setIsValidationDialogOpen(true);
+            return;
+        }
+
         // Assign default details if the input is empty
         const finalDetails = details.trim() === ''
             ? (type === 'salary' ? 'Income' : 'Expense')
@@ -89,6 +96,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ saveTransaction, edit
                 onClose={() => setIsInfoDialogOpen(false)}
                 title="First Transaction Rule"
                 message={<p>To avoid a negative balance, your first transaction must be a <span className="font-semibold text-green-500 dark:text-green-400">Salary</span> entry. Please add an income source before recording an expense.</p>}
+            />
+            <InfoDialog
+                isOpen={isValidationDialogOpen}
+                onClose={() => setIsValidationDialogOpen(false)}
+                title="Invalid Input"
+                message={<p>The 'Details' field cannot contain only numbers. Please use a combination of letters and numbers (e.g., "Invoice 123").</p>}
             />
             <ConfirmationDialog
                 isOpen={isConfirmOpen}
