@@ -32,9 +32,15 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({ isOpen, onClose, user
     return null;
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setEditedProfile(prev => ({ ...prev, [name]: value }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+
+    // For radio buttons, the value is always a string.
+    // For the salary input, we want to convert the value to a number.
+    const isNumericInput = type === 'number';
+    const finalValue = isNumericInput ? parseFloat(value) || 0 : value;
+
+    setEditedProfile(prev => ({ ...prev, [name]: finalValue }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, imageType: 'profilePictureUrl' | 'coverPhotoUrl') => {
@@ -138,7 +144,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({ isOpen, onClose, user
             <div className="pt-16">
               {isEditing ? (
                 <div>
-                  <button onClick={handleAttemptCancel} className="flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 font-semibold mb-4">
+                  <button onClick={handleAttemptCancel} className="flex items-center text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-bold mb-4 py-2 px-4 rounded-lg bg-green-100 dark:bg-green-900/50 transition-colors duration-300 ease-in-out">
                     <i className="fas fa-arrow-left mr-2"></i> Go Back
                   </button>
                   <div className="space-y-4">
@@ -152,8 +158,29 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({ isOpen, onClose, user
                         <p className={`text-xs text-right mt-1 ${bioWordCount > 100 ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`}>{bioWordCount} / 100 words</p>
                     </div>
                     <div>
-                      <label htmlFor="employment" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Employment</label>
-                      <input type="text" name="employment" id="employment" value={editedProfile.employment} onChange={handleInputChange} className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md p-2 focus:ring-2 focus:ring-green-500 outline-none" />
+                      <label htmlFor="natureOfWork" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Nature of Work</label>
+                      <select name="natureOfWork" id="natureOfWork" value={editedProfile.natureOfWork} onChange={handleInputChange} className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md p-2 focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="">Select...</option>
+                        <option value="employed">Employed</option>
+                        <option value="self-employed">Self-Employed</option>
+                        <option value="student">Student</option>
+                        <option value="unemployed">Unemployed</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="salary" className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Salary</label>
+                      <div className="flex items-center gap-2">
+                        <input type="number" name="salary" id="salary" value={editedProfile.salary} onChange={handleInputChange} className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md p-2 focus:ring-2 focus:ring-green-500 outline-none" />
+                        <div className="flex items-center">
+                          <input type="radio" id="weekly" name="salaryFrequency" value="weekly" checked={editedProfile.salaryFrequency === 'weekly'} onChange={handleInputChange} className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300" />
+                          <label htmlFor="weekly" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Weekly</label>
+                        </div>
+                        <div className="flex items-center">
+                          <input type="radio" id="monthly" name="salaryFrequency" value="monthly" checked={editedProfile.salaryFrequency === 'monthly'} onChange={handleInputChange} className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300" />
+                          <label htmlFor="monthly" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Monthly</label>
+                        </div>
+                      </div>
                     </div>
                     <div className="flex justify-end gap-2 pt-4">
                       <button onClick={handleAttemptCancel} className="px-4 py-2 rounded-md font-semibold bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white transition-colors">Cancel</button>
@@ -175,8 +202,12 @@ const UserProfilePage: React.FC<UserProfilePageProps> = ({ isOpen, onClose, user
                           <p className="whitespace-pre-wrap">{userProfile.bio || <span className="text-gray-400 italic">No bio provided.</span>}</p>
                       </div>
                       <div>
-                          <h4 className="font-semibold text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider">Employment</h4>
-                          <p>{userProfile.employment || <span className="text-gray-400 italic">Not specified.</span>}</p>
+                          <h4 className="font-semibold text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider">Nature of Work</h4>
+                          <p>{userProfile.natureOfWork || <span className="text-gray-400 italic">Not specified.</span>}</p>
+                      </div>
+                      <div>
+                          <h4 className="font-semibold text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider">Salary</h4>
+                          <p>{userProfile.salary > 0 ? `$${userProfile.salary.toLocaleString()} ${userProfile.salaryFrequency}` : <span className="text-gray-400 italic">Not specified.</span>}</p>
                       </div>
                   </div>
                 </div>
