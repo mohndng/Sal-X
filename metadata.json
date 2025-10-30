@@ -1,0 +1,5 @@
+{
+  "name": "Sal-X",
+  "description": "A minimalist web application for tracking salary and expenses. It provides a spreadsheet-like interface to manage your finances and allows exporting the data to a CSV file.",
+  "requestFramePermissions": []
+}
