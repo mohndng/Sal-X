@@ -1,6 +1,4 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://raw.githubusercontent.com/mohndng/Sal-X/refs/heads/main/SalX/Screenshot_2025-10-31-04-12-30-218_com.brave.browser-edit.jpg" />
-</div>
+# Sal-X: Your Personal Salary & Expense Tracker
 
 Sal-X is a modern, responsive web application designed to help you effortlessly track your income and expenses. With an intuitive interface and powerful features, managing your personal finances has never been easier.
 
